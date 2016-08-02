@@ -6,7 +6,9 @@ module Lib
     ( startServer
     ) where
 
-import Data.Text
+--import Data.Text
+import Data.List (isInfixOf)
+import Data.Char (toLower)
 import Servant
 import Data.Aeson
 import Network.Wai
@@ -31,9 +33,13 @@ geeknights =
   ]
 
 type EventAPI = "events" :> Get '[JSON] [Event]
+  :<|> "event" :> Capture "id" Int :> Get '[JSON] Event
 
 server :: Server EventAPI
-server = return geeknights
+server = listEvents :<|> readEvent
+  where
+    listEvents = return geeknights
+    readEvent id = return (geeknights !! (id - 1))
 
 eventAPI :: Proxy EventAPI
 eventAPI = Proxy

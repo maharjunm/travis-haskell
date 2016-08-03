@@ -34,12 +34,14 @@ geeknights =
 
 type EventAPI = "events" :> Get '[JSON] [Event]
   :<|> "event" :> Capture "id" Int :> Get '[JSON] Event
+  :<|> "events" :> "search" :> Capture "name" String :> Get '[JSON] [Event]
 
 server :: Server EventAPI
-server = listEvents :<|> readEvent
+server = listEvents :<|> readEvent :<|> searchEvents
   where
     listEvents = return geeknights
     readEvent id = return (geeknights !! (id - 1))
+    searchEvents query = return (filter (\event -> (map toLower query) `isInfixOf` (map toLower (title event))) geeknights)
 
 eventAPI :: Proxy EventAPI
 eventAPI = Proxy

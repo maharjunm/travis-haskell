@@ -1,3 +1,6 @@
 ghc: 7.4
 
+script:
+  - cabal configure --enable-tests -fFOO && cabal build && cabal test
+
 cabal configure --enable-tests && cabal build && cabal test
